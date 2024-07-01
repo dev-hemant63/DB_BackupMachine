@@ -61,7 +61,7 @@ namespace FSM.Repository
             {
                 FileInfo fileInfo = new FileInfo(file);
                 TimeSpan age = DateTime.Now - fileInfo.CreationTime;
-                if (age.TotalHours > 24)
+                if (age.TotalHours > 48)
                 {
                     try
                     {
