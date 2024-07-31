@@ -22,39 +22,48 @@ namespace FSM.Repository
 
             string serverName = "103.180.120.159";
             string databaseName = "finnid_live2";
-			string userName = "sa";
-			string password = "786@Raam";
-			string backupDirectory = @"F:\DB-Backup\";
+            string userName = "sa";
+            string password = "786@Raam";
+
+            //string serverName = "DESKTOP-53IIA9U";
+            //string databaseName = "Hangfire_DB";
+
+
+            //string backupDirectory = @"E:\DB-Backup\";
+            string backupDirectory = @"C:\DB-Backup\";
             string backupFileName = $"{databaseName}_backup_{DateTime.Now:yyyyMMdd_HHmmss}.bak";
 
             try
             {
-				ServerConnection serverConnection = new ServerConnection(serverName, userName, password);
-				try
-				{
-					serverConnection.Connect();
-					Console.WriteLine("Connection to the server established successfully.");
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"Failed to connect to the server: {ex.Message}");
-					return;
-				}
-				
+                ServerConnection serverConnection = new ServerConnection(serverName);
+                //ServerConnection serverConnection = new ServerConnection(serverName, userName, password);
+                try
+                {
+                    serverConnection.Connect();
+                    Console.WriteLine("Connection to the server established successfully.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to connect to the server: {ex.Message}");
+                    return;
+                }
+
                 Server server = new Server(serverConnection);
                 Backup backup = new Backup
                 {
                     Action = BackupActionType.Database,
                     Database = databaseName
                 };
-				if (!Directory.Exists(backupDirectory))
-				{
-					Directory.CreateDirectory(backupDirectory);
-				}
-				backup.Devices.AddDevice(backupDirectory + backupFileName, DeviceType.File);
+                if (!Directory.Exists(backupDirectory))
+                {
+                    Directory.CreateDirectory(backupDirectory);
+                }
+                var filePath = backupDirectory + backupFileName;
+                backup.Devices.AddDevice(filePath, DeviceType.File);
                 backup.Initialize = true;
                 backup.SqlBackup(server);
-                Console.WriteLine($"Backup completed successfully {DateTime.Now.ToString("dd MM yyyy hh mm ss")} ......");
+                BackUPEmailSender.Send($"Backup completed successfully {DateTime.Now.ToString("dd MM yyyy hh mm ss")} ......", filePath);
+                Console.WriteLine($"Backup completed successfully {DateTime.Now.ToString("dd MM yyyy hh mm ss")} and to director email......");
 
                 DeleteOldBackUp(backupDirectory);
             }
