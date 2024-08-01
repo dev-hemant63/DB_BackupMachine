@@ -20,7 +20,7 @@ namespace FSM.Repository
         {
             Console.WriteLine("Backup Initiating....");
 
-            string serverName = "103.180.120.159";
+            string serverName = "618994-ABHITRAD\\SQLEXPRESS";
             string databaseName = "finnid_live2";
             string userName = "sa";
             string password = "786@Raam";
@@ -35,8 +35,8 @@ namespace FSM.Repository
 
             try
             {
-                ServerConnection serverConnection = new ServerConnection(serverName);
-                //ServerConnection serverConnection = new ServerConnection(serverName, userName, password);
+                //ServerConnection serverConnection = new ServerConnection(serverName);
+                ServerConnection serverConnection = new ServerConnection(serverName, userName, password);
                 try
                 {
                     serverConnection.Connect();
@@ -62,7 +62,10 @@ namespace FSM.Repository
                 backup.Devices.AddDevice(filePath, DeviceType.File);
                 backup.Initialize = true;
                 backup.SqlBackup(server);
-                BackUPEmailSender.Send($"Backup completed successfully {DateTime.Now.ToString("dd MM yyyy hh mm ss")} ......", filePath);
+
+                GoogleDriveHelper.UploadFile(filePath);
+
+                BackUPEmailSender.Send($"Backup completed successfully {DateTime.Now.ToString("dd MM yyyy hh mm ss")}. Go to Google Drive And Check It.");
                 Console.WriteLine($"Backup completed successfully {DateTime.Now.ToString("dd MM yyyy hh mm ss")} and to director email......");
 
                 DeleteOldBackUp(backupDirectory);

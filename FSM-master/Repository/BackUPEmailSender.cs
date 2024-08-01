@@ -5,7 +5,7 @@ namespace FSM.Repository
 {
     public static class BackUPEmailSender
     {
-        public static async Task<AppResponse> Send(string message,string AttachmentURL)
+        public static async Task<AppResponse> Send(string message)
         {
             var response = new AppResponse
             {
@@ -21,8 +21,8 @@ namespace FSM.Repository
                 massage.Body = message;
                 massage.IsBodyHtml = false;
 
-                Attachment attachment = new Attachment(AttachmentURL);
-                massage.Attachments.Add(attachment);
+                //Attachment attachment = new Attachment(AttachmentURL);
+                //massage.Attachments.Add(attachment);
 
 
                 var smtpclient = new SmtpClient("mail5005.site4now.net")
